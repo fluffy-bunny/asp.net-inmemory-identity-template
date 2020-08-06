@@ -17,6 +17,7 @@ namespace InMemoryIdentityApp.Models
 
         public string ResponseType { get; set; }
         public bool GetClaimsFromUserInfoEndpoint { get; set; }
+        public string DisplayNameClaimName { get; set; }
 
     }
 }

@@ -25,17 +25,20 @@ namespace InMemoryIdentityApp.Areas.Identity.Pages.Account
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly List<OpenIdConnectSchemeRecord> _oidcConfigRecords;
         private readonly ILogger<ExternalLoginModel> _logger;
-        private string[] _possibleNameTypes = new[] { "DisplayName", "preferred_username", "name", ClaimTypes.Name, ClaimTypes.GivenName, ClaimTypes.Email };
+        private string[] _possibleNameTypes = new[] {  ClaimTypes.Name, ClaimTypes.GivenName, ClaimTypes.Email, "DisplayName", "preferred_username", "name" };
 
         public ExternalLoginModel(
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
+            List<OpenIdConnectSchemeRecord> oidcConfigRecords,
             ILogger<ExternalLoginModel> logger
         )
         {
             _signInManager = signInManager;
             _userManager = userManager;
+            _oidcConfigRecords = oidcConfigRecords;
             _logger = logger;
         }
 
@@ -95,6 +98,13 @@ namespace InMemoryIdentityApp.Areas.Identity.Pages.Account
                 ErrorMessage = "Error loading external login information.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
+            var oidcConfig = (from item in _oidcConfigRecords
+                                  where item.Scheme == info.LoginProvider
+                                  select item).FirstOrDefault();
+            if (oidcConfig == null)
+            {
+                throw new Exception($"Error getting oidcConfig for loginProvider:{info.LoginProvider}");
+            }
             var oidc = await HarvestOidcDataAsync();
             HttpContext.Session.Set(Wellknown.OIDCSessionKey, new OpenIdConnectSessionDetails
             {
@@ -106,12 +116,12 @@ namespace InMemoryIdentityApp.Areas.Identity.Pages.Account
                               where claim.Type == ClaimTypes.NameIdentifier
                               select claim;
             var nameIdClaim = queryNameId.FirstOrDefault();
+            var displayName = nameIdClaim.Value;
 
             var query = from claim in info.Principal.Claims
-                        where _possibleNameTypes.Contains(claim.Type)
+                        where oidcConfig.DisplayNameClaimName == claim.Type
                         select claim;
             var nameClaim = query.FirstOrDefault();
-            var displayName = nameIdClaim.Value;
             if (nameClaim != null)
             {
                 displayName = nameClaim.Value;
@@ -153,12 +163,17 @@ namespace InMemoryIdentityApp.Areas.Identity.Pages.Account
                 return Page();
             }
              */
+            var queryEmail = from claim in info.Principal.Claims
+                              where claim.Type == ClaimTypes.Email
+                              select claim;
+            var emailClaim = queryNameId.FirstOrDefault();
+            var email = emailClaim?.Value;
             var leftoverUser = await _userManager.FindByEmailAsync(displayName);
             if (leftoverUser != null)
             {
                 await _userManager.DeleteAsync(leftoverUser); // just using this inMemory userstore as a scratch holding pad
             }
-            var user = new ApplicationUser { UserName = nameIdClaim.Value, Email = displayName };
+            var user = new ApplicationUser { DisplayName = displayName, UserName = nameIdClaim.Value, Email = email };
 
             var result = await _userManager.CreateAsync(user);
 

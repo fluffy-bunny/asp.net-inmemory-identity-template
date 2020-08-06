@@ -39,6 +39,7 @@ namespace InMemoryIdentityApp.Extensions
             var section = configuration.GetSection("oidc");
             var oAuth2SchemeRecords = new List<OpenIdConnectSchemeRecord>();
             section.Bind(oAuth2SchemeRecords);
+            services.AddSingleton(oAuth2SchemeRecords);
             foreach (var record in oAuth2SchemeRecords)
             {
                 var scheme = record.Scheme;
