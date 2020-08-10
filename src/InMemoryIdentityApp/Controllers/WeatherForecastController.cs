@@ -11,6 +11,7 @@ using System.Threading;
 namespace InMemoryIdentityApp.Controllers
 {
     [ApiController]
+    [Produces("application/json")]
     [Route("api/[controller]")]
     [Authorize]
     public class WeatherForecastController : ControllerBase

@@ -19,6 +19,7 @@ using Microsoft.Extensions.Logging;
 using Serilog.Enrichers.Extensions;
 using CorrelationId.DependencyInjection;
 using CorrelationId;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace InMemoryIdentityApp
 {
@@ -58,6 +59,30 @@ namespace InMemoryIdentityApp
                 services.ConfigureApplicationCookie(options =>
                 {
                     options.Cookie.Name = $"{Configuration["applicationName"]}.AspNetCore.Identity.Application";
+                    options.LoginPath = $"/Identity/Account/Login"; 
+                    options.LogoutPath = $"/Identity/Account/Logout";
+                    options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
+                    options.Events = new CookieAuthenticationEvents()
+                    {
+                        OnRedirectToLogin = (ctx) =>
+                        {
+                            if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == StatusCodes.Status200OK)
+                            {
+                                ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                            }
+
+                            return Task.CompletedTask;
+                        },
+                        OnRedirectToAccessDenied = (ctx) =>
+                        {
+                            if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == StatusCodes.Status200OK)
+                            {
+                                ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
+                            }
+
+                            return Task.CompletedTask;
+                        }
+                    };
                 });
                 services.AddAuthentication<ApplicationUser>(Configuration);
 
