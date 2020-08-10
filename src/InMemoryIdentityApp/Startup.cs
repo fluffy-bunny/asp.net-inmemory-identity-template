@@ -61,6 +61,7 @@ namespace InMemoryIdentityApp
                 });
                 services.AddAuthentication<ApplicationUser>(Configuration);
 
+                services.AddControllers();
                 services.AddRazorPages();
 
                 // Adds a default in-memory implementation of IDistributedCache.
@@ -68,9 +69,10 @@ namespace InMemoryIdentityApp
 
                 services.AddSession(options =>
                 {
+                    options.Cookie.IsEssential = true;
                     options.Cookie.Name = $"{Configuration["applicationName"]}.Session";
                 // Set a short timeout for easy testing.
-                options.IdleTimeout = TimeSpan.FromSeconds(3600);
+                    options.IdleTimeout = TimeSpan.FromSeconds(3600);
                     options.Cookie.HttpOnly = true;
                 });
             }
@@ -121,6 +123,7 @@ namespace InMemoryIdentityApp
 
             app.UseEndpoints(endpoints =>
             {
+                endpoints.MapControllers();
                 endpoints.MapRazorPages();
             });
         }

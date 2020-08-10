@@ -26,6 +26,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Identity.Contrib.InMemoryStore\Identity.Contrib.InMemoryStore.csproj" />
     <ProjectReference Include="..\Serilog.Enricher.CorrelationId\Serilog.Enrichers.csproj" />
+    <ProjectReference Include="..\SharedModels\SharedModels.csproj" />
   </ItemGroup>
 
 </Project>
