@@ -46,6 +46,13 @@ namespace InMemoryIdentityApp
         {
             try
             {
+                // TODO: EVALUATE THIS
+                // We want X-Frame-Options=deny for everything except a group of blessed domains
+                services.AddAntiforgery(options =>
+                {
+                    options.SuppressXFrameOptionsHeader = true;
+                    
+                });
                 services.AddCors(options => options.AddPolicy("CorsPolicy",
                     builder =>
                     {
@@ -160,6 +167,7 @@ namespace InMemoryIdentityApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
             app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();
             app.UseForwardedHeaders();

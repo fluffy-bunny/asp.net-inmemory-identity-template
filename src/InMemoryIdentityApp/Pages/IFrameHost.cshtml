@@ -24,8 +24,14 @@
     This hosts @xipIo in an IFrame in a Razor Page
 </div>
 <p id="received-message">I've heard nothing yet</p>
-<iframe id="guestFrame" name="guestFrame" src="@xipIo?hostPortHole=@localhost">
-</iframe>
+
+<div class="parent">
+   
+    <iframe id="guestFrame" name="guestFrame" src="@xipIo?hostPortHole=@localhost">
+    </iframe>
+</div>
+
+ 
 
 <script>
     function onMessage(messageEvent) {
