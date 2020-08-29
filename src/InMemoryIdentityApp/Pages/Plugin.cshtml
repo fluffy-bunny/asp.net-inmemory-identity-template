@@ -15,29 +15,18 @@
         };
     </script>
 }
-
-<h1>@ViewData["Title"]</h1>
-
-<p>@localhost</p>
-<button id='signin'>signin</button>
-<p id="received-message">I've heard nothing yet</p>
-<form style="display: none;" id="loginform" target="guestFrame"
-      
-      action="/Identity/Account/ExternalLogin?returnUrl=%2FOIDCIFrameResult&amp;errorUrl=%2FOIDCIFrameResult&amp;prompt=none&amp;provider=google"
-      method="post">
-    <div>
-        <p>
-             
-            <input type="submit">
-        </p>
-    </div>
-</form>
-
-
-<iframe style="display: none;" id="guestFrame" name="guestFrame" src="/Blank">
-    Your browser does not support inline frames.
-</iframe>
-<script>
+@section Scripts
+{
+    <script src="~/js/fetch-activity-monitor.js" asp-append-version="true"></script>
+    <script>
+    var windowProxy;
+    var hostWindowProxy;
+    fetchActivityMonitor.start(() => {
+        console.log("fetchActivityMonitor called.")
+        if (hostWindowProxy) {
+             hostWindowProxy.post({ 'keepAlive': true });
+        }
+    });
     document.getElementById('signin').addEventListener("click", signin, false);
     ///////////////////////////////
     // functions for UI elements
@@ -45,6 +34,17 @@
     function signin() {
         var loginform = document.getElementById("loginform");
         loginform.submit();
+    }
+    document.getElementById('ping').addEventListener("click", ping, false);
+
+    function ping() {
+        fetch("/api/ping", {
+            method: 'GET',
+            headers: { 'Content-Type': 'text/plain' }
+
+        }).then(function (res) {
+            console.log(res);
+        });
     }
 
     function onMessage(messageEvent) {
@@ -56,8 +56,7 @@
         document.getElementById("received-message").innerHTML = JSON.stringify(messageEvent);
     }
 
-    var windowProxy;
-    var hostWindowProxy;
+
     window.onload = function () {
         // Create a proxy window to send to and receive
         // messages from the iFrame
@@ -67,12 +66,39 @@
         // Register an event handler to receive messages;
         windowProxy.addEventListener(onMessage);
 
-        // This is the porthole to the host
-        hostWindowProxy = new Porthole.WindowProxy('@Model.HostPortHole');
-
-        // Post message back to host that we made it.
-        hostWindowProxy.post({ 'plugin': { error: null, name: '@localhost' } });
+        var hostPortHole = "@Model.HostPortHole";
+        if (hostPortHole) {
+            // This is the porthole to the host
+            hostWindowProxy = new Porthole.WindowProxy('@Model.HostPortHole');
+        }
+        if (hostWindowProxy) {
+            // Post message back to host that we made it.
+            hostWindowProxy.post({ 'plugin': { error: null, name: '@localhost' } });
+        }
     };
 
 
-</script>
+    </script>
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>@localhost</p>
+<button id='ping'>ping</button>
+<button id='signin'>signin</button>
+<p id="received-message">I've heard nothing yet</p>
+<form style="display: none;" id="loginform" target="guestFrame"
+      action="/Identity/Account/ExternalLogin?returnUrl=%2FOIDCIFrameResult&amp;errorUrl=%2FOIDCIFrameResult&amp;prompt=none&amp;provider=google"
+      method="post">
+    <div>
+        <p>
+
+            <input type="submit">
+        </p>
+    </div>
+</form>
+
+
+<iframe style="display: none;" id="guestFrame" name="guestFrame" src="/Blank">
+    Your browser does not support inline frames.
+</iframe>
+
