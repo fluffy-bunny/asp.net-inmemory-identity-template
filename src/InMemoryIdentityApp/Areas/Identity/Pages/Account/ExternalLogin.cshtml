@@ -3,7 +3,8 @@
 @{
     ViewData["Title"] = "Register";
 }
-
+@using Microsoft.AspNetCore.Identity
+@attribute [IgnoreAntiforgeryToken]
 <h1>@ViewData["Title"]</h1>
 <h4 id="external-login-title">Associate your @Model.LoginProvider account.</h4>
 <hr />

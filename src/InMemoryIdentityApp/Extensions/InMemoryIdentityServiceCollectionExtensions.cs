@@ -68,6 +68,14 @@ namespace InMemoryIdentityApp.Extensions
                     };
                     options.Events.OnRedirectToIdentityProvider = context =>
                     {
+                        var query = from item in context.Request.Query
+                                    where string.Compare(item.Key, "prompt", true) == 0
+                                    select item.Value;
+                        if (query.Any())
+                        {
+                            var prompt = query.FirstOrDefault();
+                            context.ProtocolMessage.Prompt = prompt;
+                        }
 
                         context.Response.SetJsonCookie(".oidc.memoryCacheKey", Guid.NewGuid().ToString(), 60);
                         if (record.AdditionalProtocolScopes != null && record.AdditionalProtocolScopes.Any())

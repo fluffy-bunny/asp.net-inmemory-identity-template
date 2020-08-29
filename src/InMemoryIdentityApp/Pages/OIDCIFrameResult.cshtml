@@ -1,0 +1,34 @@
+﻿@page
+@using System.Text.Json 
+@model InMemoryIdentityApp.Pages.OIDCIFrameResultModel
+@{ Layout = null; }
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>OIDCIFrameResult</title>
+    <script type="text/javascript" src="~/lib/ternarylabs/porthole/porthole.min.js"></script>
+</head>
+<body>
+    <script>
+    var error = @Html.Raw(JsonSerializer.Serialize(Model.Error));
+    var oidc = @Html.Raw(JsonSerializer.Serialize(Model.OIDC));
+    var windowProxy;
+    window.onload=function(){
+        // Create a proxy window to send to and receive
+        // messages from the parent
+        windowProxy = new Porthole.WindowProxy('/iFrameProxy');
+
+        // Register an event handler to receive messages;
+        windowProxy.addEventListener(function(event) {
+            // handle event
+        });
+        windowProxy.post({ 'action': {error:error,oidc:oidc} });
+    };
+
+    </script>
+
+</body>
+</html>

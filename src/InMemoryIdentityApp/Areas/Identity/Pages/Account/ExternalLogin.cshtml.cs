@@ -21,6 +21,8 @@ using InMemoryIdentityApp.Data;
 
 namespace InMemoryIdentityApp.Areas.Identity.Pages.Account
 {
+    [SecurityHeaders]
+    [AllowAnonymous]
     public class ExternalLoginModel : PageModel
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
@@ -63,6 +65,7 @@ namespace InMemoryIdentityApp.Areas.Identity.Pages.Account
         {
             return RedirectToPage("./Login");
         }
+   
         public IActionResult OnPost(string provider, string returnUrl = null)
         {
             Request.HttpContext.Items.Add("a", "b");

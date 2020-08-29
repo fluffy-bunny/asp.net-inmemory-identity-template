@@ -1,0 +1,52 @@
+﻿@page "{id}"
+@model InMemoryIdentityApp.Pages.IFrameHostModel
+@section headEnd
+{
+    <script type="text/javascript" src="~/lib/ternarylabs/porthole/porthole.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function () {
+            Porthole.WindowProxyDispatcher.start();
+        };
+    </script>
+}
+
+@{
+    var portS = "";
+    var port = HttpContext.Request.Host.Port;
+    if (port != null)
+    {
+        portS = $":{port}";
+    }
+    var xipIo = $"https://127.0.0.1.xip.io{portS}/{Model.IFrameAppId}";
+    var localhost = $"https://localhost{portS}/iFrameProxy";
+}
+<div class="alert alert-primary" role="alert">
+    This hosts @xipIo in an IFrame in a Razor Page
+</div>
+<p id="received-message">I've heard nothing yet</p>
+<iframe id="guestFrame" name="guestFrame" src="@xipIo?hostPortHole=@localhost">
+</iframe>
+
+<script>
+    function onMessage(messageEvent) {
+        /*
+       messageEvent.origin: Protocol and domain origin of the message
+       messageEvent.data: Message itself
+       messageEvent.source: Window proxy object, useful to post a response
+       */
+        document.getElementById("received-message").innerHTML = JSON.stringify(messageEvent);
+    }
+
+    var windowProxy;
+    window.onload = function () {
+        // Create a proxy window to send to and receive
+        // messages from the iFrame
+        windowProxy = new Porthole.WindowProxy(
+            '/iFrameProxy',
+            'guestFrame');
+        // Register an event handler to receive messages;
+        windowProxy.addEventListener(onMessage);
+    };
+
+
+</script>

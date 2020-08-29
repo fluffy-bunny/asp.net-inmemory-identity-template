@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InMemoryIdentityApp", "InMe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Enrichers", "Serilog.Enricher.CorrelationId\Serilog.Enrichers.csproj", "{8F9063BB-871C-40C8-A7D1-5B3ACDD380BA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedModels", "SharedModels\SharedModels.csproj", "{7E709066-7BC7-4090-B465-4C703503BE71}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedModels", "SharedModels\SharedModels.csproj", "{7E709066-7BC7-4090-B465-4C703503BE71}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

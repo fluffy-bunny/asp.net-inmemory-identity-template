@@ -18,17 +18,14 @@ function Check {
 }
 
 $DockerOS = docker version -f "{{ .Server.Os }}"
-$ImageName = "inmemoryidentityapp/build"
-$Dockerfile = "Dockerfile"
 
 $Version = "0.0.3"
 
 PrintElapsedTime
 
 Log "Build application image"
-docker build --no-cache --pull -t $ImageName -f $Dockerfile --build-arg Version=$Version .
-PrintElapsedTime
-Check "docker build (application)"
 
-docker build -f ./InMemoryIdentityApp/Dockerfile -t inmemoryidentityapp/app .
+docker build . --file ./Build-Dockerfile     --tag fluffybunny/inmemoryidentityapptemplatebuild 
+docker build . --file ./App-Dockerfile       --tag fluffybunny/inmemoryidentityapptemplate
+
  

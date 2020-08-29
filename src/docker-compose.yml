@@ -2,8 +2,8 @@
 version: '3.4'
 
 services:
-  fluffybunny4:
-    image: inmemoryidentityapp/app:latest
+  inmemoryidentityapp:
+    image: fluffybunny/inmemoryidentityapptemplate:latest
      
     volumes:
       - ${CERTIFICATE_PATH}:/root/.dotnet/https
@@ -16,12 +16,13 @@ services:
       - ASPNETCORE_Kestrel__Certificates__Default__Password=${ASPNETCORE_KESTREL_CERTIFICATE_PASSWORD}
       - ASPNETCORE_Kestrel__Certificates__Default__Path=${ASPNETCORE_KESTREL_CERTIFICATE_PATH}
       - ASPNETCORE_HTTPS_PORT=5101
-      - ApplicationInsights:InstrumentationKey=${ApplicationInsights_InstrumentationKey}
-      - oidc:1:clientId=${oidc_1_clientId}
-      - oidc:1:clientSecret=${oidc_1_clientSecret}
-      - oidc:1:authority=${oidc_1_authority}
-      - oidc:2:clientId=${oidc_2_clientId}
-      - oidc:2:clientSecret=${oidc_2_clientSecret}
-      - oidc:2:authority=${oidc_2_authority}
+      - oidc__1__authority=${oidc__1__authority}
+      - oidc__1__clientId=${oidc__1__clientId}
+      - oidc__1__clientSecret=${oidc__1__clientSecret}
+      - oidc__2__authority=${oidc__2__authority}
+      - oidc__2__clientId=${oidc__2__clientId}
+      - oidc__2__clientSecret=${oidc__2__clientSecret}
+      - ApplicationInsights__InstrumentationKey=${ApplicationInsights__InstrumentationKey}
+
 
 

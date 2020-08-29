@@ -6,6 +6,8 @@
     <title>@ViewData["Title"] - InMemoryIdentityApp</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+    @RenderSection("headEnd", required: false)
+
 </head>
 <body>
     <header>
@@ -22,6 +24,8 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
+                        <partial name="_DomainDropdownPartial" />
+                        <partial name="_IFrameHostDropdownPartial" />
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>

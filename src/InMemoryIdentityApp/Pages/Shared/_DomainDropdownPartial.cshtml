@@ -1,0 +1,23 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using System.Linq
+
+@{
+    var portS = "";
+    var port = this.ViewContext.HttpContext.Request.Host.Port;
+    if (port != null)
+    {
+        portS = $":{port}";
+    }
+    var xipIo = $"https://127.0.0.1.xip.io{portS}";
+    var localhost = $"https://localhost{portS}";
+}
+
+<li class="nav-item dropdown">
+    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Domains
+    </a>
+    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+        <a class="dropdown-item nav-link text-dark" href="@xipIo">@xipIo</a>
+        <a class="dropdown-item nav-link text-dark" href="@localhost">@localhost</a>
+    </div>
+</li>
