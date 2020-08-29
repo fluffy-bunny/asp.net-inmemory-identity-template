@@ -12,4 +12,5 @@ RUN ls
 FROM base AS final
 WORKDIR /app
 COPY --from=build /out .
+ENV ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
 ENTRYPOINT ["dotnet", "InMemoryIdentityApp.dll"]

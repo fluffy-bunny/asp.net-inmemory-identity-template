@@ -20,6 +20,7 @@ using Serilog.Enrichers.Extensions;
 using CorrelationId.DependencyInjection;
 using CorrelationId;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace InMemoryIdentityApp
 {
@@ -45,6 +46,31 @@ namespace InMemoryIdentityApp
         {
             try
             {
+                services.AddCors(options => options.AddPolicy("CorsPolicy",
+                    builder =>
+                    {
+
+                        builder.AllowAnyMethod()
+                              .AllowAnyHeader()
+                              .AllowAnyOrigin();
+                    }));
+                // set forward header keys to be the same value as request's header keys
+                // so that redirect URIs and other security policies work correctly.
+                var aspNETCORE_FORWARDEDHEADERS_ENABLED = string.Equals(Environment.GetEnvironmentVariable("ASPNETCORE_FORWARDEDHEADERS_ENABLED"), "true", StringComparison.OrdinalIgnoreCase);
+                if (aspNETCORE_FORWARDEDHEADERS_ENABLED)
+                {
+                    //To forward the scheme from the proxy in non-IIS scenarios
+                    services.Configure<ForwardedHeadersOptions>(options =>
+                    {
+                        options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+                        // Only loopback proxies are allowed by default.
+                        // Clear that restriction because forwarders are enabled by explicit 
+                        // configuration.
+                        options.KnownNetworks.Clear();
+                        options.KnownProxies.Clear();
+                    });
+                }
+
                 services.AddDefaultCorrelationId();
                 services.AddEnrichers();
                 services.Configure<CookiePolicyOptions>(options =>
@@ -134,8 +160,9 @@ namespace InMemoryIdentityApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
+            app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();
+            app.UseForwardedHeaders();
             app.UseStaticFiles();
             app.UseCorrelationId();
             app.UseCookiePolicy();
