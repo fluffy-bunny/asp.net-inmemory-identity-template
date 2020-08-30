@@ -22,6 +22,8 @@ using CorrelationId;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
 using authprofiles;
+using jsonplaceholder.service.Extensions;
+using authprofiles.Extensions;
 
 namespace InMemoryIdentityApp
 {
@@ -47,6 +49,8 @@ namespace InMemoryIdentityApp
         {
             try
             {
+                services.AddJsonPlaceholderServices();
+                services.AddTokenManagerServices();
                 // TODO: EVALUATE THIS
                 // We want X-Frame-Options=deny for everything except a group of blessed domains
                 services.AddAntiforgery(options =>
@@ -98,13 +102,15 @@ namespace InMemoryIdentityApp
                     options.AccessDeniedPath = $"/Identity/Account/AccessDenied";
                     options.Events = new CookieAuthenticationEvents()
                     {
+                        
                         OnRedirectToLogin = (ctx) =>
                         {
                             if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == StatusCodes.Status200OK)
                             {
                                 ctx.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                                return Task.CompletedTask;
                             }
-
+                            ctx.Response.Redirect(ctx.RedirectUri);
                             return Task.CompletedTask;
                         },
                         OnRedirectToAccessDenied = (ctx) =>
@@ -112,8 +118,9 @@ namespace InMemoryIdentityApp
                             if (ctx.Request.Path.StartsWithSegments("/api") && ctx.Response.StatusCode == StatusCodes.Status200OK)
                             {
                                 ctx.Response.StatusCode = StatusCodes.Status403Forbidden;
+                                return Task.CompletedTask;
                             }
-
+                            ctx.Response.Redirect(ctx.RedirectUri);
                             return Task.CompletedTask;
                         }
                     };

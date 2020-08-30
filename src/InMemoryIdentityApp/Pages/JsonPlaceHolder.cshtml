@@ -1,0 +1,28 @@
+﻿@page
+@using Microsoft.AspNetCore.Authorization
+@attribute [Authorize]
+@model InMemoryIdentityApp.Pages.JsonPlaceHolderModel
+@{
+}
+<h1 class="display-4">Users</h1>
+@{
+    foreach (var user in Model.Users)
+    {
+    <table class="table">
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+        <tr>
+            <td>Id</td>
+            <td>@user.Id</td>
+        </tr>
+        <tr>
+            <td>Name</td>
+            <td>@user.Name</td>
+        </tr>
+    </table>
+
+    }
+}
+
