@@ -12,16 +12,14 @@ namespace authprofiles
     {
         //
         // Summary:
-        //     Provides a central transformation point to change the specified principal. Note:
-        //     this will be run on each AuthenticateAsync call, so its safer to return a new
-        //     ClaimsPrincipal if your transformation is not idempotent.
+        //     Provides additional claims you can add to the external user that was just authenticated.
         //
         // Parameters:
         //   principal:
-        //     The System.Security.Claims.ClaimsPrincipal to transform.
+        //     The System.Security.Claims.ClaimsPrincipal to evaluate.
         //
         // Returns:
-        //     The transformed principal.
+        //     The claims.
         Task<IEnumerable<Claim>> GetClaimsAsync(ClaimsPrincipal principal);
     }
 }
