@@ -18,6 +18,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 using InMemoryIdentityApp.Extensions;
 using InMemoryIdentityApp.Data;
+using authprofiles;
 
 namespace InMemoryIdentityApp.Areas.Identity.Pages.Account
 {
@@ -28,6 +29,7 @@ namespace InMemoryIdentityApp.Areas.Identity.Pages.Account
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly List<OpenIdConnectSchemeRecord> _oidcConfigRecords;
+        private readonly IPostExternalLoginClaimsProvider _postLoginClaimsTransformation;
         private readonly ILogger<ExternalLoginModel> _logger;
         private string[] _possibleNameTypes = new[] {  ClaimTypes.Name, ClaimTypes.GivenName, ClaimTypes.Email, "DisplayName", "preferred_username", "name" };
 
@@ -35,12 +37,14 @@ namespace InMemoryIdentityApp.Areas.Identity.Pages.Account
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
             List<OpenIdConnectSchemeRecord> oidcConfigRecords,
+            IPostExternalLoginClaimsProvider postLoginClaimsTransformation,
             ILogger<ExternalLoginModel> logger
         )
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _oidcConfigRecords = oidcConfigRecords;
+            _postLoginClaimsTransformation = postLoginClaimsTransformation;
             _logger = logger;
         }
 
@@ -95,33 +99,39 @@ namespace InMemoryIdentityApp.Areas.Identity.Pages.Account
                 ErrorMessage = $"Error from external provider: {remoteError}";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
-            var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
+            var externalLoginInfo = await _signInManager.GetExternalLoginInfoAsync();
+            if (externalLoginInfo == null)
             {
                 ErrorMessage = "Error loading external login information.";
                 return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
             }
+           
             var oidcConfig = (from item in _oidcConfigRecords
-                                  where item.Scheme == info.LoginProvider
+                                  where item.Scheme == externalLoginInfo.LoginProvider
                                   select item).FirstOrDefault();
             if (oidcConfig == null)
             {
-                throw new Exception($"Error getting oidcConfig for loginProvider:{info.LoginProvider}");
+                throw new Exception($"Error getting oidcConfig for loginProvider:{externalLoginInfo.LoginProvider}");
             }
             var oidc = await HarvestOidcDataAsync();
             HttpContext.Session.Set(Wellknown.OIDCSessionKey, new OpenIdConnectSessionDetails
             {
-                LoginProider = info.LoginProvider,
+                LoginProider = externalLoginInfo.LoginProvider,
                 OIDC = oidc
             });
+            IEnumerable<Claim> additionalClaims = null;
+            if (_postLoginClaimsTransformation != null)
+            {
+                additionalClaims = await _postLoginClaimsTransformation.GetClaimsAsync(externalLoginInfo.Principal);
+            }
 
-            var queryNameId = from claim in info.Principal.Claims
+            var queryNameId = from claim in externalLoginInfo.Principal.Claims
                               where claim.Type == ClaimTypes.NameIdentifier
                               select claim;
             var nameIdClaim = queryNameId.FirstOrDefault();
             var displayName = nameIdClaim.Value;
 
-            var query = from claim in info.Principal.Claims
+            var query = from claim in externalLoginInfo.Principal.Claims
                         where oidcConfig.DisplayNameClaimName == claim.Type
                         select claim;
             var nameClaim = query.FirstOrDefault();
@@ -166,7 +176,7 @@ namespace InMemoryIdentityApp.Areas.Identity.Pages.Account
                 return Page();
             }
              */
-            var queryEmail = from claim in info.Principal.Claims
+            var queryEmail = from claim in externalLoginInfo.Principal.Claims
                               where claim.Type == ClaimTypes.Email
                               select claim;
             var emailClaim = queryNameId.FirstOrDefault();
@@ -186,14 +196,18 @@ namespace InMemoryIdentityApp.Areas.Identity.Pages.Account
                 var eClaims = new List<Claim>
                 {
                     new Claim("display-name", displayName),
-                    new Claim("login_provider",info.LoginProvider)
+                    new Claim("login_provider",externalLoginInfo.LoginProvider)
                 };
+                if(additionalClaims != null)
+                {
+                    eClaims.AddRange(additionalClaims);
+                }
                 // normalized id.
                 await _userManager.AddClaimsAsync(newUser, eClaims);
 
                 await _signInManager.SignInAsync(user, isPersistent: false);
                 await _userManager.DeleteAsync(user); // just using this inMemory userstore as a scratch holding pad
-                _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+                _logger.LogInformation("User created an account using {Name} provider.", externalLoginInfo.LoginProvider);
 
                 return LocalRedirect(returnUrl);
             }

@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Enrichers", "Serilo
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedModels", "SharedModels\SharedModels.csproj", "{7E709066-7BC7-4090-B465-4C703503BE71}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "authprofiles", "authprofiles\authprofiles.csproj", "{46DF0019-7E66-492E-ADB3-967439A3E02C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{7E709066-7BC7-4090-B465-4C703503BE71}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E709066-7BC7-4090-B465-4C703503BE71}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E709066-7BC7-4090-B465-4C703503BE71}.Release|Any CPU.Build.0 = Release|Any CPU
+		{46DF0019-7E66-492E-ADB3-967439A3E02C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{46DF0019-7E66-492E-ADB3-967439A3E02C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{46DF0019-7E66-492E-ADB3-967439A3E02C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{46DF0019-7E66-492E-ADB3-967439A3E02C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

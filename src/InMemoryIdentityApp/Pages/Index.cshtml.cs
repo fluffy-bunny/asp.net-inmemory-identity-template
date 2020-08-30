@@ -19,7 +19,6 @@ namespace InMemoryIdentityApp.Pages
 
         public void OnGet()
         {
-
         }
     }
 }

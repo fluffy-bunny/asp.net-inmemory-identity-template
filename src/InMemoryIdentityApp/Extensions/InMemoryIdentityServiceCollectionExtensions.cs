@@ -4,8 +4,10 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using authprofiles;
 using InMemoryIdentityApp.Extensions;
 using InMemoryIdentityApp.Models;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -111,7 +113,7 @@ namespace InMemoryIdentityApp.Extensions
                 });
             }
 
-
+            // claims transformation is run after every Authenticate call
             return new IdentityBuilder(typeof(TUser), services);
         }
     }

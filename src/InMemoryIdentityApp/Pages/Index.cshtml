@@ -4,13 +4,85 @@
     ViewData["Title"] = "Home page";
 }
 
-    <div class="text-center">
-        <h1 class="display-4">Welcome</h1>
-        <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-        <p>What is <a href="api/weatherforecast">The Weather Forecast</a>.</p>
-        <p>What is <a href="api/AuthStatus/display-name">The User Display Name</a>.</p>
-        <p>What is <a href="api/AuthStatus/claims">The User Claims</a>.</p>
-        <p>What is <a href="api/AuthStatus/oidc-session-details">The User oidc-session-details</a>.</p>
+<div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>What is <a href="api/weatherforecast">The Weather Forecast</a>.</p>
+    <p>What is <a href="api/AuthStatus/display-name">The User Display Name</a>.</p>
+    <p>What is <a href="api/AuthStatus/claims">The User Claims</a>.</p>
+    <p>What is <a href="api/AuthStatus/oidc-session-details">The User oidc-session-details</a>.</p>
 
-    </div>
+</div>
+
+<h1 class="display-4">HTTPRequest</h1>
+<table class="table">
+    <tr>
+        <th>Key</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Scheme</td>
+        <td>@Request.Scheme</td>
+    </tr>
+    <tr>
+        <td>Host</td>
+        <td>@Request.Host</td>
+    </tr>
+    <tr>
+        <td>PathBase</td>
+        <td>@Request.PathBase</td>
+    </tr>
+    <tr>
+        <td>Path</td>
+        <td>@Request.Path</td>
+    </tr>
+    <tr>
+        <td>QueryString</td>
+        <td>@Request.QueryString</td>
+    </tr>
+
+
+
+</table>
+
+<h1 class="display-4">Headers</h1>
+<table class="table">
+    <tr>
+        <th>Key</th>
+        <th>Value</th>
+    </tr>
+    @{
+        foreach (var header in Request.Headers)
+        {
+        <tr>
+            <td>@header.Key</td>
+            <td>@header.Value</td>
+        </tr>
+
+        }
+    }
+
+</table>
+@{
+    if (User.Identity.IsAuthenticated)
+    {
+        <h1 class="display-4">User Claims</h1>
+        <table class="table">
+            <tr>
+                <th>Key</th>
+                <th>Value</th>
+            </tr>
+            @{
+                foreach (var claim in User.Claims)
+                {
+                    <tr>
+                        <td>@claim.Type</td>
+                        <td>@claim.Value</td>
+                    </tr>
+
+                }
+            }
+        </table>
+    }
+}
 

@@ -6,6 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication" Version="2.2.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" Version="3.1.6" />
 
     <PackageReference Include="CorrelationId" Version="3.0.0" />
@@ -24,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\authprofiles\authprofiles.csproj" />
     <ProjectReference Include="..\Identity.Contrib.InMemoryStore\Identity.Contrib.InMemoryStore.csproj" />
     <ProjectReference Include="..\Serilog.Enricher.CorrelationId\Serilog.Enrichers.csproj" />
     <ProjectReference Include="..\SharedModels\SharedModels.csproj" />

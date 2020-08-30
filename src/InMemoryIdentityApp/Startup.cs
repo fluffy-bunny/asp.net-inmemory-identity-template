@@ -21,6 +21,7 @@ using CorrelationId.DependencyInjection;
 using CorrelationId;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.HttpOverrides;
+using authprofiles;
 
 namespace InMemoryIdentityApp
 {
@@ -118,6 +119,7 @@ namespace InMemoryIdentityApp
                     };
                 });
                 services.AddAuthentication<ApplicationUser>(Configuration);
+                services.AddSingleton<IPostExternalLoginClaimsProvider, PostExternalLoginClaimsProvider>();
 
                 services.AddControllers();
                 services.AddRazorPages();
