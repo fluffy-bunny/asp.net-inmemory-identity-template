@@ -34,11 +34,12 @@ namespace jsonplaceholder.service
             };
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            //   var access_token = await _tokenManager.FetchAccessTokenAsync("jsonplaceholder");
-            var access_token = "test";
+            var managedToken = await _tokenManager.GetManagedTokenAsync("test");
+ 
+          
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer",
-                access_token);
+                managedToken.AccessToken);
             
             return client;
         }
