@@ -1,0 +1,33 @@
+﻿@page
+@model InMemoryIdentityApp.Pages.OAuth2ManagementModel
+@{
+}
+
+<h1 class="display-4">Dicovery</h1>
+<table class="table">
+    <tr>
+        <th>Key</th>
+        <th>Value</th>
+    </tr>
+    <tr>
+        <td>Authority</td>
+        <td>@Model.Creds.Authority</td>
+    </tr>
+    <tr>
+        <td>JwksUri</td>
+        <td>@Model.Creds.DiscoveryDocumentResponse.JwksUri</td>
+    </tr>
+    <tr>
+        <td>Issuer</td>
+        <td>@Model.Creds.DiscoveryDocumentResponse.Issuer</td>
+    </tr>
+    <tr>
+        <td>TokenEndpoint</td>
+        <td>@Model.Creds.DiscoveryDocumentResponse.TokenEndpoint</td>
+    </tr>
+    <tr>
+        <td>RevocationEndpoint</td>
+        <td>@Model.Creds.DiscoveryDocumentResponse.RevocationEndpoint</td>
+    </tr>
+
+</table>

@@ -7,10 +7,6 @@ namespace authprofiles.Extensions
 {
     public static class DependencyInjectionExtensions
     {
-        public static IServiceCollection AddTokenManagerServices(this IServiceCollection services)
-        {
-            services.AddTransient<ITokenManager, TokenManager>();
-            return services;
-        }
+        
     }
 }

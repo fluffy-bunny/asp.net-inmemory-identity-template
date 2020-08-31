@@ -2,6 +2,7 @@
 using Common;
 using jsonplaceholder.service.Models;
 using Microsoft.Extensions.Logging;
+using oauth2.helpers;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -16,9 +17,9 @@ namespace jsonplaceholder.service
     public class JsonPlaceholderService : IJsonPlaceholderService
     {
         private ILogger<JsonPlaceholderService> _logger;
-        ITokenManager _tokenManager;
+        ITokenManager<GlobalDistributedCacheTokenStorage> _tokenManager;
         public JsonPlaceholderService(
-            ITokenManager tokenManager,
+            ITokenManager<GlobalDistributedCacheTokenStorage> tokenManager,
             ILogger<JsonPlaceholderService> logger)
         {
             _tokenManager = tokenManager;
@@ -33,7 +34,8 @@ namespace jsonplaceholder.service
             };
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            var access_token = await _tokenManager.FetchAccessTokenAsync("jsonplaceholder");
+            //   var access_token = await _tokenManager.FetchAccessTokenAsync("jsonplaceholder");
+            var access_token = "test";
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer",
                 access_token);

@@ -1,7 +1,8 @@
 ﻿using System;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Newtonsoft.Json;
+using System.Text.Json;
+ 
 
 namespace Microsoft.AspNetCore.Mvc
 {
@@ -27,7 +28,7 @@ namespace Microsoft.AspNetCore.Mvc
             else
                 option.Expires = DateTime.Now.AddMilliseconds(10);
 
-            response.Cookies.Append(key, JsonConvert.SerializeObject(value), option);
+            response.Cookies.Append(key, JsonSerializer.Serialize(value), option);
         }
         public static void SetJsonCookie<T>(this ControllerBase controllerBase, string key, T value, int? expireTime)
         {
@@ -46,7 +47,7 @@ namespace Microsoft.AspNetCore.Mvc
             {
                 return null;
             }
-            return JsonConvert.DeserializeObject<T>(cookieValueFromReq);
+            return JsonSerializer.Deserialize<T>(cookieValueFromReq);
 
         }
         public static T GetJsonCookie<T>(this ControllerBase controllerBase, string key) where T : class

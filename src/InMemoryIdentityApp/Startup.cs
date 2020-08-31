@@ -24,6 +24,8 @@ using Microsoft.AspNetCore.HttpOverrides;
 using authprofiles;
 using jsonplaceholder.service.Extensions;
 using authprofiles.Extensions;
+using oauth2.helpers.Extensions;
+using oauth2.helpers;
 
 namespace InMemoryIdentityApp
 {
@@ -49,8 +51,9 @@ namespace InMemoryIdentityApp
         {
             try
             {
+                services.AddManagedTokenServices();
                 services.AddJsonPlaceholderServices();
-                services.AddTokenManagerServices();
+
                 // TODO: EVALUATE THIS
                 // We want X-Frame-Options=deny for everything except a group of blessed domains
                 services.AddAntiforgery(options =>
@@ -150,7 +153,10 @@ namespace InMemoryIdentityApp
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env,
+        public void Configure(
+            IApplicationBuilder app, 
+            IWebHostEnvironment env,
+            IServiceProvider serviceProvider,
             ILogger<Startup> logger)
         {
             if (_logger is LoggerBuffered)
@@ -176,6 +182,23 @@ namespace InMemoryIdentityApp
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            var oAuth2CredentialManager = serviceProvider.GetRequiredService<IOAuth2CredentialManager>();
+
+
+            oAuth2CredentialManager.AddCredentialsAsync("test", new OAuth2Credentials
+            {
+                Authority = "https://demo.identityserver.io",
+                ClientId = "m2m",
+                ClientSecret = "secret"
+            }).GetAwaiter().GetResult();
+
+            var globalTokenManager = serviceProvider.GetRequiredService<ITokenManager<GlobalDistributedCacheTokenStorage>>();
+            globalTokenManager.AddManagedTokenAsync("test", new oauth2.helpers.ManagedToken
+            {
+                CredentialsKey = "test",
+                RequestFunctionKey = "client_credentials",
+                RequestedScope = null // everything
+            }).GetAwaiter().GetResult(); 
 
             app.UseCors("CorsPolicy");
             app.UseHttpsRedirection();

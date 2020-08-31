@@ -31,6 +31,7 @@
     <ProjectReference Include="..\authprofiles\authprofiles.csproj" />
     <ProjectReference Include="..\Identity.Contrib.InMemoryStore\Identity.Contrib.InMemoryStore.csproj" />
     <ProjectReference Include="..\jsonplaceholder.service\jsonplaceholder.service.csproj" />
+    <ProjectReference Include="..\oauth2.helpers\oauth2.helpers.csproj" />
     <ProjectReference Include="..\Serilog.Enricher.CorrelationId\Serilog.Enrichers.csproj" />
     <ProjectReference Include="..\SharedModels\SharedModels.csproj" />
   </ItemGroup>
