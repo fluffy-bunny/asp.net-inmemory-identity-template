@@ -17,7 +17,9 @@ namespace Microsoft.AspNetCore.Mvc
         {
             CookieOptions option = new CookieOptions()
             {
-                IsEssential = true
+                IsEssential = true,
+                SameSite = SameSiteMode.None,
+                Secure = true
             };
 
             if (expireTime.HasValue)
