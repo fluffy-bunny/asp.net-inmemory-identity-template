@@ -16,10 +16,11 @@ namespace jsonplaceholder.service
 
     public class JsonPlaceholderService : IJsonPlaceholderService
     {
+        private ITokenManager<SessionDistributedCacheTokenStorage> _tokenManager;
         private ILogger<JsonPlaceholderService> _logger;
-        ITokenManager<GlobalDistributedCacheTokenStorage> _tokenManager;
+ 
         public JsonPlaceholderService(
-            ITokenManager<GlobalDistributedCacheTokenStorage> tokenManager,
+            ITokenManager<SessionDistributedCacheTokenStorage> tokenManager,
             ILogger<JsonPlaceholderService> logger)
         {
             _tokenManager = tokenManager;
@@ -34,8 +35,17 @@ namespace jsonplaceholder.service
             };
             var contentType = new MediaTypeWithQualityHeaderValue("application/json");
             client.DefaultRequestHeaders.Accept.Add(contentType);
-            var managedToken = await _tokenManager.GetManagedTokenAsync("test");
- 
+            var managedToken = await _tokenManager.GetManagedTokenAsync("test", true);
+            if(managedToken == null)
+            {
+                await _tokenManager.AddManagedTokenAsync("test", new oauth2.helpers.ManagedToken
+                {
+                    CredentialsKey = "test",
+                    RequestFunctionKey = "client_credentials",
+                    RequestedScope = null // everything
+                });
+                managedToken = await _tokenManager.GetManagedTokenAsync("test",true);
+            }
           
             client.DefaultRequestHeaders.Authorization =
                 new AuthenticationHeaderValue("Bearer",
