@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.EntityFrameworkCore;
 using InMemoryIdentityApp.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -96,9 +95,16 @@ namespace InMemoryIdentityApp
                 });
 
                 services.AddInMemoryIdentity<ApplicationUser, ApplicationRole>().AddDefaultTokenProviders();
-
+                services.ConfigureExternalCookie(config =>
+                {
+                    config.Cookie.SameSite = SameSiteMode.None;
+                });
                 services.ConfigureApplicationCookie(options =>
                 {
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+          
+
                     options.Cookie.Name = $"{Configuration["applicationName"]}.AspNetCore.Identity.Application";
                     options.LoginPath = $"/Identity/Account/Login"; 
                     options.LogoutPath = $"/Identity/Account/Logout";
@@ -144,6 +150,8 @@ namespace InMemoryIdentityApp
                 // Set a short timeout for easy testing.
                     options.IdleTimeout = TimeSpan.FromSeconds(3600);
                     options.Cookie.HttpOnly = true;
+                    options.Cookie.SameSite = SameSiteMode.None;
+                    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
                 });
             }
             catch (Exception ex)
