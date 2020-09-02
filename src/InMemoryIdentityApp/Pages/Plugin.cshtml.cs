@@ -17,6 +17,8 @@ namespace InMemoryIdentityApp.Pages
 
         public string HostPortHole { get; private set; }
         public string Prompt { get; set; }
+        public string FrameLoginProxy { get; set; }
+
         public PluginModel(SignInManager<ApplicationUser> signInManager, ILogger<PluginModel> logger)
         {
             _signInManager = signInManager;
@@ -27,6 +29,7 @@ namespace InMemoryIdentityApp.Pages
         {
             HostPortHole = hostPortHole;
             Prompt = "none";
+            FrameLoginProxy = $"{Request.Scheme}://{Request.Host}/iFrameLoginProxyModel";
         }
     }
 }

@@ -19,12 +19,8 @@
     window.onload=function(){
         // Create a proxy window to send to and receive
         // messages from the parent
-        windowProxy = new Porthole.WindowProxy('/iFrameProxy');
-
-        // Register an event handler to receive messages;
-        windowProxy.addEventListener(function(event) {
-            // handle event
-        });
+        windowProxy = new Porthole.WindowProxy('@Model.FrameLoginProxy');
+        
         windowProxy.post({ 'action': {error:error,oidc:oidc} });
     };
 

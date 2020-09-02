@@ -17,6 +17,8 @@ namespace InMemoryIdentityApp.Pages
         private readonly ILogger<OIDCIFrameResultModel> _logger;
         public string Error { get; set; }
         public Dictionary<string, string> OIDC { get; set; }
+        public string FrameLoginProxy { get; private set; }
+
         public OIDCIFrameResultModel(SignInManager<ApplicationUser> signInManager, ILogger<OIDCIFrameResultModel> logger)
         {
             _signInManager = signInManager;
@@ -24,6 +26,7 @@ namespace InMemoryIdentityApp.Pages
         }
         public async Task OnGet(string error = null)
         {
+            FrameLoginProxy = $"{Request.Scheme}://{Request.Host}/iFrameLoginProxyModel";
             Error = error;
             if (string.IsNullOrEmpty(Error))
             {

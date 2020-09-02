@@ -23,13 +23,7 @@
 
         var windowProxy;
         var hostWindowProxy;
-        fetchActivityMonitor.start(() => {
-            console.log("fetchActivityMonitor called.")
-            if (hostWindowProxy) {
-                 hostWindowProxy.post({ 'keepAlive': true });
-            }
-        });
-        document.getElementById('signin').addEventListener("click", signin, false);
+
         ///////////////////////////////
         // functions for UI elements
         ///////////////////////////////
@@ -60,11 +54,23 @@
 
 
         window.onload = function () {
+
+            fetchActivityMonitor.start(() => {
+                console.log("fetchActivityMonitor called.")
+                if (hostWindowProxy) {
+                    hostWindowProxy.post({ 'keepAlive': true });
+                }
+            });
+            var signinButton = document.getElementById('signin');
+            if (signinButton) {
+                signinButton.addEventListener("click", signin, false);
+            }
+
             // Create a proxy window to send to and receive
             // messages from the iFrame
             windowProxy = new Porthole.WindowProxy(
-                '/iFrameProxy',
-                'guestFrame');
+                '@Model.FrameLoginProxy',
+                'loginFrame');
             // Register an event handler to receive messages;
             windowProxy.addEventListener(onMessage);
 
@@ -92,7 +98,7 @@
     {
         <button id='signin'>signin</button>
         <p id="received-message">I've heard nothing yet</p>
-        <form style="display: none;" id="loginform" target="guestFrame"
+        <form style="display: none;" id="loginform" target="loginFrame"
               action="/Identity/Account/ExternalLogin?returnUrl=%2FOIDCIFrameResult&amp;errorUrl=%2FOIDCIFrameResult&amp;prompt=none&amp;provider=@provider"
               method="post">
             <div>
@@ -104,7 +110,7 @@
         </form>
 
 
-        <iframe style="display: none;" id="guestFrame" name="guestFrame" src="/Blank">
+        <iframe style="display: none;" id="loginFrame" name="loginFrame" src="/Blank">
             Your browser does not support inline frames.
         </iframe>
     }
