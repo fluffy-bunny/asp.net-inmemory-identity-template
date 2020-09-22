@@ -3,10 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30204.135
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Identity.Contrib.InMemoryStore", "Identity.Contrib.InMemoryStore\Identity.Contrib.InMemoryStore.csproj", "{46A5A207-FE43-4C06-9D3F-DD52B2AA515E}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "InMemoryIdentityApp", "InMemoryIdentityApp\InMemoryIdentityApp.csproj", "{AB33F477-22F1-4475-9CDA-ED78D15C8336}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Serilog.Enrichers", "Serilog.Enricher.CorrelationId\Serilog.Enrichers.csproj", "{8F9063BB-871C-40C8-A7D1-5B3ACDD380BA}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharedModels", "SharedModels\SharedModels.csproj", "{7E709066-7BC7-4090-B465-4C703503BE71}"
@@ -17,7 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "jsonplaceholder.service", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{E1FFC97F-FF20-410A-AC4D-7B4AE8F00FEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "oauth2.helpers", "oauth2.helpers\oauth2.helpers.csproj", "{098BA9A5-F83F-456B-8598-E682E9D0A4B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "oauth2.helpers", "oauth2.helpers\oauth2.helpers.csproj", "{098BA9A5-F83F-456B-8598-E682E9D0A4B5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "InMemoryIdentityApp", "InMemoryIdentityApp\InMemoryIdentityApp.csproj", "{C482CE8C-8C8A-462C-B2F9-2B2C68293FB6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,14 +23,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{46A5A207-FE43-4C06-9D3F-DD52B2AA515E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{46A5A207-FE43-4C06-9D3F-DD52B2AA515E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{46A5A207-FE43-4C06-9D3F-DD52B2AA515E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{46A5A207-FE43-4C06-9D3F-DD52B2AA515E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{AB33F477-22F1-4475-9CDA-ED78D15C8336}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{AB33F477-22F1-4475-9CDA-ED78D15C8336}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{AB33F477-22F1-4475-9CDA-ED78D15C8336}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{AB33F477-22F1-4475-9CDA-ED78D15C8336}.Release|Any CPU.Build.0 = Release|Any CPU
 		{8F9063BB-871C-40C8-A7D1-5B3ACDD380BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{8F9063BB-871C-40C8-A7D1-5B3ACDD380BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8F9063BB-871C-40C8-A7D1-5B3ACDD380BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,6 +47,10 @@ Global
 		{098BA9A5-F83F-456B-8598-E682E9D0A4B5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{098BA9A5-F83F-456B-8598-E682E9D0A4B5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{098BA9A5-F83F-456B-8598-E682E9D0A4B5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C482CE8C-8C8A-462C-B2F9-2B2C68293FB6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C482CE8C-8C8A-462C-B2F9-2B2C68293FB6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C482CE8C-8C8A-462C-B2F9-2B2C68293FB6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C482CE8C-8C8A-462C-B2F9-2B2C68293FB6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
