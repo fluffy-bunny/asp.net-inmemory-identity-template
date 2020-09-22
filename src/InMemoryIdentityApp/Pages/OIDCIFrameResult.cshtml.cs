@@ -13,13 +13,13 @@ namespace InMemoryIdentityApp.Pages
 {
     public class OIDCIFrameResultModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<OIDCIFrameResultModel> _logger;
         public string Error { get; set; }
         public Dictionary<string, string> OIDC { get; set; }
         public string FrameLoginProxy { get; private set; }
 
-        public OIDCIFrameResultModel(SignInManager<ApplicationUser> signInManager, ILogger<OIDCIFrameResultModel> logger)
+        public OIDCIFrameResultModel(SignInManager<IdentityUser> signInManager, ILogger<OIDCIFrameResultModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;

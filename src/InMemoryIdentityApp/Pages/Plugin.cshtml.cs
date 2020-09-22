@@ -12,14 +12,16 @@ namespace InMemoryIdentityApp.Pages
 {
     public class PluginModel : PageModel
     {
-        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly SignInManager<IdentityUser> _signInManager;
         private readonly ILogger<PluginModel> _logger;
 
         public string HostPortHole { get; private set; }
         public string Prompt { get; set; }
         public string FrameLoginProxy { get; set; }
 
-        public PluginModel(SignInManager<ApplicationUser> signInManager, ILogger<PluginModel> logger)
+      
+
+        public PluginModel(SignInManager<IdentityUser> signInManager, ILogger<PluginModel> logger)
         {
             _signInManager = signInManager;
             _logger = logger;
@@ -29,7 +31,8 @@ namespace InMemoryIdentityApp.Pages
         {
             HostPortHole = hostPortHole;
             Prompt = "none";
-            FrameLoginProxy = $"{Request.Scheme}://{Request.Host}/iFrameLoginProxyModel";
+            FrameLoginProxy = $"{Request.Scheme}://{Request.Host}/iFrameLoginProxy";
+           
         }
     }
 }

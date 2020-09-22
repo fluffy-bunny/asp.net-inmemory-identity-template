@@ -9,20 +9,16 @@
 }
 @section headEnd
 {
-    <script type="text/javascript" src="~/lib/ternarylabs/porthole/porthole.min.js"></script>
-    <script type="text/javascript">
-        window.onload = function () {
-            Porthole.WindowProxyDispatcher.start();
-        };
-    </script>
+    <script type="text/javascript" src="~/lib/ternarylabs/porthole/porthole.js"></script>
 }
 @section Scripts
 {
     <script src="~/js/fetch-activity-monitor.js" asp-append-version="true"></script>
     <script>
 
-        var windowProxy;
         var hostWindowProxy;
+        var loginProxy;
+
 
         ///////////////////////////////
         // functions for UI elements
@@ -31,8 +27,15 @@
             var loginform = document.getElementById("loginform");
             loginform.submit();
         }
-        document.getElementById('ping').addEventListener("click", ping, false);
 
+        
+
+        document.getElementById('pushState').addEventListener("click", myPushState, false);
+        function myPushState() {
+            window.history.pushState(null, null, '/a');
+        }
+
+        document.getElementById('ping').addEventListener("click", ping, false);
         function ping() {
             fetch("/api/ping", {
                 method: 'GET',
@@ -66,23 +69,30 @@
                 signinButton.addEventListener("click", signin, false);
             }
 
+
+            hostWindowProxy = new Porthole.WindowProxy('@Model.HostPortHole');
+            hostWindowProxy.post({ 'plugin': { error: null, name: '@localhost' } });
+            // Register an event handler to receive messages;
+            hostWindowProxy.addEventListener(onMessage);
+
+
             // Create a proxy window to send to and receive
             // messages from the iFrame
-            windowProxy = new Porthole.WindowProxy(
+            loginProxy = new Porthole.WindowProxy(
                 '@Model.FrameLoginProxy',
                 'loginFrame');
             // Register an event handler to receive messages;
-            windowProxy.addEventListener(onMessage);
+            loginProxy.addEventListener(onMessage);
 
-            var hostPortHole = "@Model.HostPortHole";
-            if (hostPortHole) {
-                // This is the porthole to the host
-                hostWindowProxy = new Porthole.WindowProxy('@Model.HostPortHole');
-            }
-            if (hostWindowProxy) {
-                // Post message back to host that we made it.
-                hostWindowProxy.post({ 'plugin': { error: null, name: '@localhost' } });
-            }
+            var initialState = "onpopstate: length:" + window.history.length + " location: " + document.location;
+            document.getElementById("popstate-message2").innerHTML = JSON.stringify(initialState);
+
+            window.onpopstate = function (event) {
+                var message = "onpopstate: length:" + window.history.length + " location: " + document.location + ", state: " + JSON.stringify(event.state);
+                console.log(message);
+                document.getElementById("popstate-message2").innerHTML = JSON.stringify(message);
+ 
+            };
         };
 
 
@@ -91,8 +101,11 @@
 <h1>@ViewData["Title"]</h1>
 
 <p>@localhost</p>
-<button id='ping'>ping</button>
+<p id="popstate-message2">no popstate yet</p>
 
+<button id='ping'>ping</button>
+<button id='pushState'>pushState</button>
+<p id="received-message">I've heard nothing yet from received-host-message</p>
 @{
     if (!User.Identity.IsAuthenticated)
     {

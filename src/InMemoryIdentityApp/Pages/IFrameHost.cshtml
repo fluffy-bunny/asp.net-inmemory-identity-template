@@ -1,58 +1,99 @@
-﻿@page "{id}"
+﻿@page "{id}/{*path:nonfile}"
 @model InMemoryIdentityApp.Pages.IFrameHostModel
 @section headEnd
 {
-    <script type="text/javascript" src="~/lib/ternarylabs/porthole/porthole.min.js"></script>
-    <script type="text/javascript">
-        window.onload = function () {
-            Porthole.WindowProxyDispatcher.start();
-        };
-    </script>
+    <script type="text/javascript" src="~/lib/ternarylabs/porthole/porthole.js"></script>
 }
 
-@{
-    var portS = "";
-    var port = HttpContext.Request.Host.Port;
-    if (port != null)
-    {
-        portS = $":{port}";
-    }
-    var xipIo = $"https://127.0.0.1.xip.io{portS}/{Model.IFrameAppId}";
-    var localhost = $"https://localhost{portS}/iFrameProxy";
-}
+ 
 <div class="alert alert-primary" role="alert">
-    This hosts @xipIo in an IFrame in a Razor Page
+    This hosts @Model.GuestUrl in an IFrame in a Razor Page
 </div>
-<p id="received-message">I've heard nothing yet</p>
+<p id="received-guest-message2">I've heard nothing yet from the guest</p>
 
 <div class="parent">
-   
-    <iframe id="guestFrame" name="guestFrame" src="@xipIo?hostPortHole=@localhost">
+    <button id='pushState'>pushState</button>
+    <p id="popstate-message1">no popstate yet</p>
+    <iframe id="guestFrame" name="guestFrame" src="@Model.GuestUrl?hostPortHole=@Model.HostProxyUrl">
+    </iframe>
+    <iframe id="guestFrame2" name="guestFrame2" src="@Model.GuestUrl2?hostPortHole=@Model.HostProxyUrl">
     </iframe>
 </div>
 
- 
 
+ 
 <script>
-    function onMessage(messageEvent) {
+
+    function onGuestMessage(messageEvent) {
         /*
        messageEvent.origin: Protocol and domain origin of the message
        messageEvent.data: Message itself
        messageEvent.source: Window proxy object, useful to post a response
        */
-        document.getElementById("received-message").innerHTML = JSON.stringify(messageEvent);
+        document.getElementById("received-guest-message").innerHTML = JSON.stringify(messageEvent);
     }
-
-    var windowProxy;
+    
+    var guestProxy;
+    const seasons = {
+        BRANCH: 'branch',
+        BACK: 'winter',
+        SPRING: 'spring',
+        AUTUMN: 'autumn'
+    }
     window.onload = function () {
+        State.onPopState((state) => {
+            console.log('popState:' + JSON.stringify(state))
+        });
+        State.onPushState((state) => {
+            console.log('pushState:' + JSON.stringify(state))
+        });
+
+        document.getElementById('pushState').addEventListener("click", myPushState, false);
+        function myPushState() {
+            window.location.href
+            window.history.pushState(null, null, window.location.href+'/a');
+        }
+
         // Create a proxy window to send to and receive
         // messages from the iFrame
-        windowProxy = new Porthole.WindowProxy(
-            '/iFrameProxy',
-            'guestFrame');
+        guestProxy = new Porthole.WindowProxy(
+                '@Model.GuestProxyUrl', 'guestFrame');
+
         // Register an event handler to receive messages;
-        windowProxy.addEventListener(onMessage);
+        guestProxy.addEventListener(onGuestMessage);
+       
+       
+
+        var initialState = "onpopstate: length:" + window.history.length + " location: " + document.location;
+        document.getElementById("popstate-message1").innerHTML = JSON.stringify(initialState);
+        sessionStorage.setItem('window.history.length', window.history.length);
+        /*
+        window.onpopstate = function (event) {
+            var wl = 0;
+            var wls = sessionStorage.getItem('window.history.length');
+            if (wls === null) {
+                sessionStorage.setItem('window.history.length', window.history.length);
+                wl = window.history.length;
+            } else {
+                wl = parseInt(wls)
+            }
+            if (wl === window.history.length) {
+                // back button
+            } else if (wl > window.history.length) {
+                // we branched
+            } else {
+                // we added a new route
+            }
+          
+            var message = "onpopstate: length:" + window.history.length + " location: " + document.location + ", state: " + JSON.stringify(event.state);
+            console.log(message);
+            document.getElementById("popstate-message1").innerHTML = JSON.stringify(message);
+
+            guestProxy.post({ 'popstate': { error: null, name: message } });
+        };
+*/        
+
     };
-
-
 </script>
+
+ 

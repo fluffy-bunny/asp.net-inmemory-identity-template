@@ -16,11 +16,28 @@ namespace InMemoryIdentityApp.Pages
         {
             _logger = logger;
         }
-        public string IFrameAppId;
+        public string IFrameAppId { get; set; }
+
+        public string GuestProxyUrl { get; set; }
+        public string GuestUrl { get; set; }
+        public string GuestUrl2 { get; private set; }
+        public string HostProxyUrl { get; set; }
 
         public void OnGet(string id)
         {
+            var portS = "";
+            var port = HttpContext.Request.Host.Port;
+            if (port != null)
+            {
+                portS = $":{port}";
+            }
+
             IFrameAppId = id;
+            GuestProxyUrl = $"https://127.0.0.1.xip.io{portS}/GuestProxy/{IFrameAppId}";
+            GuestUrl = $"https://127.0.0.1.xip.io{portS}/{IFrameAppId}";
+            GuestUrl2 = $"https://a.127.0.0.1.xip.io{portS}/{IFrameAppId}";
+            HostProxyUrl = $"https://localhost{portS}/iFrameProxy";
+
         }
     }
 }

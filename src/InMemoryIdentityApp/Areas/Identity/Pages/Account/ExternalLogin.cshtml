@@ -3,14 +3,13 @@
 @{
     ViewData["Title"] = "Register";
 }
-@using Microsoft.AspNetCore.Identity
-@attribute [IgnoreAntiforgeryToken]
+
 <h1>@ViewData["Title"]</h1>
-<h4 id="external-login-title">Associate your @Model.LoginProvider account.</h4>
+<h4 id="external-login-title">Associate your @Model.ProviderDisplayName account.</h4>
 <hr />
 
 <p id="external-login-description" class="text-info">
-    You've successfully authenticated with <strong>@Model.LoginProvider</strong>.
+    You've successfully authenticated with <strong>@Model.ProviderDisplayName</strong>.
     Please enter an email address for this site below and click the Register button to finish
     logging in.
 </p>

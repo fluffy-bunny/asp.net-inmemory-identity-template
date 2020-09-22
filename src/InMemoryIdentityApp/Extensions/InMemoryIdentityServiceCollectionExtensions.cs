@@ -4,7 +4,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using authprofiles;
 using InMemoryIdentityApp.Extensions;
 using InMemoryIdentityApp.Models;
 using Microsoft.AspNetCore.Authentication;
