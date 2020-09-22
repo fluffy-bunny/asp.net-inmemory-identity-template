@@ -1,4 +1,4 @@
-﻿using InMemoryIdentityApp.Extensions;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
