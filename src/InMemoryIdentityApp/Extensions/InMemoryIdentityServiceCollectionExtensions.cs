@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using InMemoryIdentityApp.Extensions;
 using InMemoryIdentityApp.Models;
+using InMemoryIdentityApp.Services;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -62,7 +64,10 @@ namespace InMemoryIdentityApp.Extensions
 
                     options.Events.OnMessageReceived = context =>
                     {
-                        var key = context.HttpContext.Request.GetJsonCookie<string>(".oidc.memoryCacheKey");
+                        var dataProtectorAccessor = context.HttpContext.RequestServices.GetRequiredService<IDataProtectorAccessor>();
+                        var protector = dataProtectorAccessor.GetAppProtector();
+
+                        var key = context.HttpContext.Request.GetJsonCookie<string>(".oidc.memoryCacheKey", protector);
                         var dc = context.HttpContext.RequestServices.GetRequiredService<IMemoryCache>();
                         dc.Set(key, context.ProtocolMessage);
                         return Task.CompletedTask;
@@ -77,8 +82,9 @@ namespace InMemoryIdentityApp.Extensions
                             var prompt = query.FirstOrDefault();
                             context.ProtocolMessage.Prompt = prompt;
                         }
-
-                        context.Response.SetJsonCookie(".oidc.memoryCacheKey", Guid.NewGuid().ToString(), 60);
+                        var dataProtectorAccessor = context.HttpContext.RequestServices.GetRequiredService<IDataProtectorAccessor>();
+                        var protector = dataProtectorAccessor.GetAppProtector();
+                        context.Response.SetJsonCookie(".oidc.memoryCacheKey", Guid.NewGuid().ToString(), 60, protector);
                         if (record.AdditionalProtocolScopes != null && record.AdditionalProtocolScopes.Any())
                         {
                             string additionalScopes = "";

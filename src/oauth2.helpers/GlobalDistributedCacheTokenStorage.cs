@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using oauth2.helpers.Services;
 using System.Threading.Tasks;
 
 namespace oauth2.helpers
@@ -9,7 +10,7 @@ namespace oauth2.helpers
     {
         const string _cacheKey = "jmu35eC/BBbtV7QODlFVD4QZLR2vUP73Z3vI/1BAQug=.CsBu1d6kaefFmIitghoTyw==";
 
-        public GlobalDistributedCacheTokenStorage(ISerializer serializer, ISymmetricEncryptor encryptor, IDistributedCache cache, ILogger<GlobalDistributedCacheTokenStorage> logger) : base(serializer, encryptor, cache, logger)
+        public GlobalDistributedCacheTokenStorage(ISerializer serializer, IDataProtectorAccessor dataProtectorAccessor, IDistributedCache cache, ILogger<GlobalDistributedCacheTokenStorage> logger) : base(serializer, dataProtectorAccessor, cache, logger)
         {
         }
 

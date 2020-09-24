@@ -23,6 +23,7 @@ using Microsoft.Extensions.Logging;
 using InMemoryIdentityApp.Extensions;
 using CorrelationId;
 using oauth2.helpers;
+using InMemoryIdentityApp.Services;
 
 namespace InMemoryIdentityApp
 {
@@ -49,11 +50,13 @@ namespace InMemoryIdentityApp
         {
             try
             {
+                services.AddDataProtection();
+                services.AddSingleton<IDataProtectorAccessor, DataProtectorAccessor>();
                 services.AddDbContext<ApplicationDbContext>(config =>
-            {
-                // for in memory database  
-                config.UseInMemoryDatabase("MemoryBaseDataBase");
-            });
+                {
+                    // for in memory database  
+                    config.UseInMemoryDatabase("MemoryBaseDataBase");
+                });
                 services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<ApplicationDbContext>()
                     .AddDefaultTokenProviders();

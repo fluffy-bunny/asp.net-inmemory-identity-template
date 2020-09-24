@@ -4,11 +4,13 @@ using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 using oauth2.helpers.Models;
+using oauth2.helpers.Services;
 using System;
 using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace oauth2.helpers
 {
@@ -16,17 +18,17 @@ namespace oauth2.helpers
         where T: TokenStorage
     {
         protected ISerializer _serializer;
-        protected ISymmetricEncryptor _encryptor;
+        private IDataProtectorAccessor _dataProtectorAccessor;
         private IDistributedCache _cache;
         protected ILogger<T> _logger;
         public DistributedCacheTokenStorage(
             ISerializer serializer,
-            ISymmetricEncryptor encryptor,
+            IDataProtectorAccessor dataProtectorAccessor,
             IDistributedCache cache, 
             ILogger<T> logger)
         {
             _serializer = serializer;
-            _encryptor = encryptor;
+            _dataProtectorAccessor = dataProtectorAccessor;
             _cache = cache;
             _logger = logger;
         }
@@ -35,16 +37,19 @@ namespace oauth2.helpers
         protected async Task<Dictionary<string, ManagedToken>> GetManagedTokensAsync()
         {
             var cacheKey = await GetCacheKeyAsync();
-            var cacheKeyHash = GetHash(cacheKey);
-            var encrypted = await _cache.GetObjectFromJson<string>(cacheKeyHash);
+            var protector = _dataProtectorAccessor.GetProtector(cacheKey);
+           
+            var json = await _cache.GetObjectFromJson<string>(cacheKey);
+            
             Dictionary<string, ManagedToken> managedTokens = null;
-            if (string.IsNullOrWhiteSpace(encrypted))
+            if (string.IsNullOrWhiteSpace(json))
             {
                 managedTokens = new Dictionary<string, ManagedToken>();
                 await UpsertManagedTokensAsync(managedTokens);
                 return managedTokens;
             }
-            var json = _encryptor.DecryptString(cacheKey, encrypted);
+            json = protector.Unprotect(json);
+           
             var tokens = _serializer.Deserialize<Dictionary<string, ManagedToken>>(json);
             return tokens;
         }
@@ -52,11 +57,11 @@ namespace oauth2.helpers
         protected async Task UpsertManagedTokensAsync(Dictionary<string, ManagedToken> managedTokens)
         {
             var cacheKey = await GetCacheKeyAsync();
-            var cacheKeyHash = GetHash(cacheKey);
+            var protector = _dataProtectorAccessor.GetProtector(cacheKey);
+          
             var json = _serializer.Serialize(managedTokens);
-            var encrypted = _encryptor.EncryptString(cacheKey, json);
-
-            await _cache.SetObjectAsJson(cacheKeyHash, encrypted, new DistributedCacheEntryOptions
+            json = protector.Protect(json);
+            await _cache.SetObjectAsJson(cacheKey, json, new DistributedCacheEntryOptions
             {
                 SlidingExpiration = new TimeSpan(1, 0, 0, 0)// 1 day sliding
             });
@@ -103,24 +108,8 @@ namespace oauth2.helpers
         public async override Task RemoveManagedTokensAsync()
         {
             var cacheKey = await GetCacheKeyAsync();
-            var cacheKeyHash = GetHash(cacheKey);
-            await _cache.RemoveAsync(cacheKeyHash);
+            await _cache.RemoveAsync(cacheKey);
         }
-        private string GetHash(string original)
-        {
-            using (SHA256 sha256Hash = SHA256.Create())
-            {
-                // ComputeHash - returns byte array  
-                byte[] bytes = sha256Hash.ComputeHash(Encoding.UTF8.GetBytes(original));
-
-                // Convert byte array to a string   
-                StringBuilder builder = new StringBuilder();
-                for (int i = 0; i < bytes.Length; i++)
-                {
-                    builder.Append(bytes[i].ToString("x2"));
-                }
-                return builder.ToString();
-            }
-        }
+        
     }
 }

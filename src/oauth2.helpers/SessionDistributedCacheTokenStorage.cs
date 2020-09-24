@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.Logging;
+using oauth2.helpers.Services;
 using System;
 using System.Threading.Tasks;
 
@@ -18,14 +19,13 @@ namespace oauth2.helpers
             public string Key { get; set; }
         }
  
-
+ 
         public SessionDistributedCacheTokenStorage(
             IHttpContextAccessor httpContextAccessor,
             ISerializer serializer, 
-            ISymmetricEncryptor encryptor, 
+            IDataProtectorAccessor dataProtectorAccessor, 
             IDistributedCache cache, 
-            ILogger<SessionDistributedCacheTokenStorage> logger) : 
-            base(serializer, encryptor, cache, logger)
+            ILogger<SessionDistributedCacheTokenStorage> logger) : base(serializer, dataProtectorAccessor,cache, logger)
         {
             _httpContextAccessor = httpContextAccessor;
         }
@@ -37,8 +37,10 @@ namespace oauth2.helpers
             {
                 sessionKey = new SessionKey
                 {
-                    Key = _encryptor.GenerateKey()
+                    Key = GuidS
                 };
+         //       _httpContextAccessor.HttpContext.Response.Set(_sessionKey, sessionKey);
+
                 _httpContextAccessor.HttpContext.Session.Set(_sessionKey, sessionKey);
             }
             return sessionKey.Key;
