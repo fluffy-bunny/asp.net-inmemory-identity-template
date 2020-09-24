@@ -18,7 +18,7 @@ namespace oauth2.helpers
         where T: TokenStorage
     {
         protected ISerializer _serializer;
-        private IDataProtectorAccessor _dataProtectorAccessor;
+        protected IDataProtectorAccessor _dataProtectorAccessor;
         private IDistributedCache _cache;
         protected ILogger<T> _logger;
         public DistributedCacheTokenStorage(
