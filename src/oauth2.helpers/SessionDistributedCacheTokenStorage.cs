@@ -39,8 +39,6 @@ namespace oauth2.helpers
                 {
                     Key = GuidS
                 };
-         //       _httpContextAccessor.HttpContext.Response.Set(_sessionKey, sessionKey);
-
                 _httpContextAccessor.HttpContext.Session.Set(_sessionKey, sessionKey);
             }
             return sessionKey.Key;
