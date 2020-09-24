@@ -2,6 +2,7 @@
 using IdentityModel.Client;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
+using oauth2.helpers.Models;
 using System;
 using System.Net.Http;
 using System.Threading;

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using oauth2.helpers.Models;
+using System.Threading.Tasks;
 
 namespace oauth2.helpers
 {

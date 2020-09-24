@@ -7,10 +7,12 @@ namespace oauth2.helpers
 {
     public class GlobalDistributedCacheTokenStorage : DistributedCacheTokenStorage<GlobalDistributedCacheTokenStorage>
     {
-        const string _cacheKey = "2d452551-0686-4221-8ad4-5786d7d8f2a2";
-        public GlobalDistributedCacheTokenStorage(IDistributedCache cache, ILogger<GlobalDistributedCacheTokenStorage> logger) : base(cache, logger)
+        const string _cacheKey = "jmu35eC/BBbtV7QODlFVD4QZLR2vUP73Z3vI/1BAQug=.CsBu1d6kaefFmIitghoTyw==";
+
+        public GlobalDistributedCacheTokenStorage(ISerializer serializer, ISymmetricEncryptor encryptor, IDistributedCache cache, ILogger<GlobalDistributedCacheTokenStorage> logger) : base(serializer, encryptor, cache, logger)
         {
         }
+
         public override Task<string> GetCacheKeyAsync()
         {
             return Task.FromResult(_cacheKey);

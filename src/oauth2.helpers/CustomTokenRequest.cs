@@ -1,5 +1,6 @@
 ﻿using IdentityModel.Client;
 using Microsoft.Extensions.Logging;
+using oauth2.helpers.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;

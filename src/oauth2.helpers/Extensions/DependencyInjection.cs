@@ -1,4 +1,5 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using oauth2.helpers.Default;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -11,6 +12,10 @@ namespace oauth2.helpers.Extensions
     {
         public static IServiceCollection AddManagedTokenServices(this IServiceCollection services)
         {
+            services.AddSingleton<ISymmetricEncryptor, AesEncryptor>();
+            services.AddSingleton<ISerializer, Serializer>();
+ 
+            services.AddSingleton<IOpenIdConnectConfigurationAccessor, OpenIdConnectConfigurationAccessor>();
             services.AddSingleton<ICustomTokenRequest, CustomTokenRequest>();
             services.AddTransient<GlobalDistributedCacheTokenStorage>();
             services.AddTransient<SessionDistributedCacheTokenStorage>();

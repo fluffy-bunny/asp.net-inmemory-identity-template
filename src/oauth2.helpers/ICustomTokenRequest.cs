@@ -1,4 +1,5 @@
-﻿using System;
+﻿using oauth2.helpers.Models;
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 
