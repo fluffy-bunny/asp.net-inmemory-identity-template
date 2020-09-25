@@ -20,20 +20,23 @@ namespace oauth2.helpers
     public class TokenManager<T> : ITokenManager<T> where T: TokenStorage
     {
         static TimedLock _lock = new TimedLock();
+        private IServiceProvider _serviceProvider;
         private IMemoryCache _memoryCache;
         private IOAuth2CredentialManager _oAuth2CredentialManager;
         private T _tokenStorage;
-        private ICustomTokenRequest _customTokenRequest;
+        private ICustomTokenRequestManager _customTokenRequest;
         private ILogger<TokenManager<T>> _logger;
 
         
         public TokenManager(
+            IServiceProvider serviceProvider,
             IMemoryCache memoryCache,
             IOAuth2CredentialManager oAuth2CredentialManager,
             T tokenStorage,
-            ICustomTokenRequest customTokenRequest,
+            ICustomTokenRequestManager customTokenRequest,
             ILogger<TokenManager<T>> logger)
         {
+            _serviceProvider = serviceProvider;
             _memoryCache = memoryCache;
             _oAuth2CredentialManager = oAuth2CredentialManager;
             _tokenStorage = tokenStorage;
@@ -98,7 +101,7 @@ namespace oauth2.helpers
                         {
                             throw new Exception($"forceRefresh requested, but no token request function exists. RequestFunctionKey={managedToken.RequestFunctionKey}");
                         }
-                        var mT = await func(managedToken,_oAuth2CredentialManager, cancellationToken);
+                        var mT = await func(managedToken, _serviceProvider,_oAuth2CredentialManager, cancellationToken);
                         if(mT == null)
                         {
                             throw new Exception($"Custom Token Request function return a null. RequestFunctionKey={managedToken.RequestFunctionKey}");

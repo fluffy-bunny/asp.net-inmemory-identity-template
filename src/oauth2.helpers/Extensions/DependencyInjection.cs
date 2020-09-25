@@ -16,7 +16,7 @@ namespace oauth2.helpers.Extensions
             services.AddSingleton<ISerializer, Serializer>();
             services.AddSingleton<IDataProtectorAccessor, DataProtectorAccessor>();
             services.AddSingleton<IOpenIdConnectConfigurationAccessor, OpenIdConnectConfigurationAccessor>();
-            services.AddSingleton<ICustomTokenRequest, CustomTokenRequest>();
+            services.AddSingleton<ICustomTokenRequestManager, CustomTokenRequestManager>();
             services.AddTransient<GlobalDistributedCacheTokenStorage>();
             services.AddTransient<SessionDistributedCacheTokenStorage>();
             services.AddTransient(typeof(ITokenManager<>), typeof(TokenManager<>));
