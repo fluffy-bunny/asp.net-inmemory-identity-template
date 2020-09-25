@@ -1,8 +1,10 @@
 ﻿using authprofiles;
 using Common;
+using FluffyBunny.OAuth2TokenManagment;
+using FluffyBunny.OAuth2TokenManagment.Models;
+using FluffyBunny.OAuth2TokenManagment.Services;
 using jsonplaceholder.service.Models;
 using Microsoft.Extensions.Logging;
-using oauth2.helpers;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -38,7 +40,7 @@ namespace jsonplaceholder.service
             var managedToken = await _tokenManager.GetManagedTokenAsync("test", true);
             if(managedToken == null)
             {
-                await _tokenManager.AddManagedTokenAsync("test", new oauth2.helpers.ManagedToken
+                await _tokenManager.AddManagedTokenAsync("test", new ManagedToken
                 {
                     CredentialsKey = "test",
                     RequestFunctionKey = "client_credentials",

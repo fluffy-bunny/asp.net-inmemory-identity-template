@@ -31,8 +31,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Common\Common.csproj" />
+    <ProjectReference Include="..\FluffyBunny.OAuth2TokenManagment\FluffyBunny.OAuth2TokenManagment.csproj" />
     <ProjectReference Include="..\jsonplaceholder.service\jsonplaceholder.service.csproj" />
-    <ProjectReference Include="..\oauth2.helpers\oauth2.helpers.csproj" />
     <ProjectReference Include="..\Serilog.Enricher.CorrelationId\Serilog.Enrichers.csproj" />
     <ProjectReference Include="..\SharedModels\SharedModels.csproj" />
   </ItemGroup>

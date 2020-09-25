@@ -1,22 +1,23 @@
 ﻿using IdentityModel.Client;
 using Microsoft.Extensions.Logging;
-using oauth2.helpers.Models;
+using FluffyBunny.OAuth2TokenManagment.Models;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
+using FluffyBunny.OAuth2TokenManagment.Services;
 
-namespace oauth2.helpers
+namespace FluffyBunny.OAuth2TokenManagment.Services.Default
 {
 
     public class CustomTokenRequestManager : ICustomTokenRequestManager
     {
-        Dictionary<string, 
-            Func<ManagedToken, 
+        Dictionary<string,
+            Func<ManagedToken,
                 IServiceProvider,
-                IOAuth2CredentialManager, 
-                CancellationToken, 
+                IOAuth2CredentialManager,
+                CancellationToken,
                 Task<ManagedToken>>> _functions;
         public CustomTokenRequestManager(ILogger<CustomTokenRequestManager> logger)
         {
@@ -52,18 +53,18 @@ namespace oauth2.helpers
             managedToken.ExpiresIn = response.ExpiresIn;
             return managedToken;
         }
-        public void AddTokenRequestFunction(string key, Func<ManagedToken, IServiceProvider,IOAuth2CredentialManager, CancellationToken, Task<ManagedToken>> func)
+        public void AddTokenRequestFunction(string key, Func<ManagedToken, IServiceProvider, IOAuth2CredentialManager, CancellationToken, Task<ManagedToken>> func)
         {
             _functions.Add(key, func);
         }
 
-        public Func<ManagedToken, IServiceProvider,IOAuth2CredentialManager, CancellationToken, Task<ManagedToken>> GetTokenRequestFunc(string key)
+        public Func<ManagedToken, IServiceProvider, IOAuth2CredentialManager, CancellationToken, Task<ManagedToken>> GetTokenRequestFunc(string key)
         {
-            if (string.IsNullOrWhiteSpace(key)) 
+            if (string.IsNullOrWhiteSpace(key))
             {
                 return null;
             }
-            Func<ManagedToken, IServiceProvider,IOAuth2CredentialManager, CancellationToken, Task<ManagedToken>> func;
+            Func<ManagedToken, IServiceProvider, IOAuth2CredentialManager, CancellationToken, Task<ManagedToken>> func;
             _functions.TryGetValue(key, out func);
             return func;
         }

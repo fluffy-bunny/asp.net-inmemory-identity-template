@@ -13,7 +13,6 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using jsonplaceholder.service.Extensions;
-using oauth2.helpers.Extensions;
 using CorrelationId.DependencyInjection;
 using Serilog.Enrichers.Extensions;
 using Microsoft.AspNetCore.Http;
@@ -22,8 +21,10 @@ using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.Extensions.Logging;
 using InMemoryIdentityApp.Extensions;
 using CorrelationId;
-using oauth2.helpers;
-using InMemoryIdentityApp.Services;
+using FluffyBunny.OAuth2TokenManagment.Extensions;
+using FluffyBunny.OAuth2TokenManagment.Services;
+using FluffyBunny.OAuth2TokenManagment.Models;
+using FluffyBunny.OAuth2TokenManagment;
 
 namespace InMemoryIdentityApp
 {
@@ -51,11 +52,10 @@ namespace InMemoryIdentityApp
             try
             {
                 services.AddDataProtection();
-                services.AddSingleton<IDataProtectorAccessor, DataProtectorAccessor>();
                 services.AddDbContext<ApplicationDbContext>(config =>
                 {
                     // for in memory database  
-                    config.UseInMemoryDatabase("MemoryBaseDataBase");
+                    config.UseInMemoryDatabase("InMemoryDataBase");
                 });
                 services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                     .AddEntityFrameworkStores<ApplicationDbContext>()
@@ -216,7 +216,7 @@ namespace InMemoryIdentityApp
             }).GetAwaiter().GetResult();
 
             var globalTokenManager = serviceProvider.GetRequiredService<ITokenManager<GlobalDistributedCacheTokenStorage>>();
-            globalTokenManager.AddManagedTokenAsync("test", new oauth2.helpers.ManagedToken
+            globalTokenManager.AddManagedTokenAsync("test", new ManagedToken
             {
                 CredentialsKey = "test",
                 RequestFunctionKey = "client_credentials",

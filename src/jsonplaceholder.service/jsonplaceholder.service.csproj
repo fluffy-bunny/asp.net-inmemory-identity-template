@@ -12,7 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\authprofiles\authprofiles.csproj" />
     <ProjectReference Include="..\Common\Common.csproj" />
-    <ProjectReference Include="..\oauth2.helpers\oauth2.helpers.csproj" />
+    <ProjectReference Include="..\FluffyBunny.OAuth2TokenManagment\FluffyBunny.OAuth2TokenManagment.csproj" />
   </ItemGroup>
 
 </Project>
